@@ -8,22 +8,51 @@
  *      the sorted order have equal slopes with respect to p. 
  *      If so, these points, together with p, are collinear.
  *************************************************************************/
+import java.util.*;
+
 public class FastCollinearPoints {
 
-    public FastCollinearPoints(Point[] points) {
-        // finds all line segments containing 4 points
-        // TODO: YOUR CODE HERE
-    }
+    private final List<LineSegment> segments;
 
-    public int numberOfSegments() {
-        // the number of line segments
-        // TODO: YOUR CODE HERE
-        return 0;
+    public FastCollinearPoints(Point[] points) {
+        if (points == null) throw new IllegalArgumentException("Input points array is null.");
+        for (Point p : points) {
+            if (p == null) throw new IllegalArgumentException("Input point is null.");
+        }
+        segments = new ArrayList<>();
+
+
+        Point[] sortedPoints = new Point[points.length];
+        System.arraycopy(points, 0, sortedPoints, 0, points.length);
+
+        for (int i = 0; i < sortedPoints.length; i++) {
+            Point origin = sortedPoints[i];
+
+            Point[] slopesSorted = sortedPoints.clone();
+            Arrays.sort(slopesSorted, origin.slopeOrder());
+
+            for (int j = 1; j < slopesSorted.length - 2; j++) {
+
+                if (origin.slopeTo(slopesSorted[j]) == origin.slopeTo(slopesSorted[j + 1]) &&
+                        origin.slopeTo(slopesSorted[j + 1]) == origin.slopeTo(slopesSorted[j + 2]) &&
+                        origin.slopeTo(slopesSorted[j + 2]) == origin.slopeTo(slopesSorted[j + 3])) {
+
+                    LineSegment segment = new LineSegment(origin, slopesSorted[j + 3]);
+                    segments.add(segment);
+
+                    origin.drawTo(slopesSorted[j + 3]);
+                    }
+                }
+            }
+        }
+
+
+
+        public int numberOfSegments() {
+        return segments.size();
     }
 
     public LineSegment[] segments() {
-        // the line segments
-        // TODO: YOUR CODE HERE
-        return null;
+        return segments.toArray(new LineSegment[0]);
     }
 }
