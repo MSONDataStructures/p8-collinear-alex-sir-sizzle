@@ -25,9 +25,7 @@ public class FastCollinearPoints {
         Point[] sortedPoints = new Point[points.length];
         System.arraycopy(points, 0, sortedPoints, 0, points.length);
 
-        for (int i = 0; i < sortedPoints.length; i++) {
-            Point origin = sortedPoints[i];
-
+        for (Point origin : sortedPoints) {
             Point[] slopesSorted = sortedPoints.clone();
             Arrays.sort(slopesSorted, origin.slopeOrder());
 
@@ -41,9 +39,9 @@ public class FastCollinearPoints {
                     segments.add(segment);
 
                     origin.drawTo(slopesSorted[j + 3]);
-                    }
                 }
             }
+        }
         }
 
 
