@@ -29,7 +29,7 @@ public class FastCollinearPoints {
             Point[] slopesSorted = sortedPoints.clone();
             Arrays.sort(slopesSorted, origin.slopeOrder());
 
-            for (int j = 1; j < slopesSorted.length - 2; j++) {
+            for (int j = 1; j < slopesSorted.length - 3; j++) {
 
                 if (origin.slopeTo(slopesSorted[j]) == origin.slopeTo(slopesSorted[j + 1]) &&
                         origin.slopeTo(slopesSorted[j + 1]) == origin.slopeTo(slopesSorted[j + 2]) &&
