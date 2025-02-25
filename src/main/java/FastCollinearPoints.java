@@ -10,47 +10,48 @@
  *************************************************************************/
 import java.util.*;
 
-public class FastCollinearPoints {
-
-    private final List<LineSegment> segments;
-
-    public FastCollinearPoints(Point[] points) {
-        if (points == null) throw new IllegalArgumentException("Input points array is null.");
-        for (Point p : points) {
-            if (p == null) throw new IllegalArgumentException("Input point is null.");
-        }
-        segments = new ArrayList<>();
 
 
-        Point[] sortedPoints = new Point[points.length];
-        System.arraycopy(points, 0, sortedPoints, 0, points.length);
+    public class FastCollinearPoints {
+        private final List<LineSegment> segments = new ArrayList<>();
 
-        for (Point origin : sortedPoints) {
-            Point[] slopesSorted = sortedPoints.clone();
-            Arrays.sort(slopesSorted, origin.slopeOrder());
+        public FastCollinearPoints(Point[] points) {
+            if (points == null) throw new IllegalArgumentException("Input points array is null.");
+            for (Point p : points) {
+                if (p == null) throw new IllegalArgumentException("Input point is null.");
+            }
 
-            for (int j = 1; j < slopesSorted.length - 3; j++) {
 
-                if (origin.slopeTo(slopesSorted[j]) == origin.slopeTo(slopesSorted[j + 1]) &&
-                        origin.slopeTo(slopesSorted[j + 1]) == origin.slopeTo(slopesSorted[j + 2]) &&
-                        origin.slopeTo(slopesSorted[j + 2]) == origin.slopeTo(slopesSorted[j + 3])) {
+            Point[] sortedPoints = new Point[points.length];
+            System.arraycopy(points, 0, sortedPoints, 0, points.length);
 
-                    LineSegment segment = new LineSegment(origin, slopesSorted[j + 3]);
-                    segments.add(segment);
+            for (Point origin : sortedPoints) {
+                Point[] slopesSorted = sortedPoints.clone();
+                Arrays.sort(slopesSorted, origin.slopeOrder());
 
-                    origin.drawTo(slopesSorted[j + 3]);
+                for (int o = 1; o < slopesSorted.length; ) {
+                    List<Point> collinear = new ArrayList<>();
+                    double slope = origin.slopeTo(slopesSorted[o]);
+
+                        for (; o < slopesSorted.length && origin.slopeTo(slopesSorted[o]) == slope; o++) {
+                            collinear.add(slopesSorted[o]);
+
+                        }
+
+                        if (collinear.size() >= 3) {
+                        collinear.add(origin);
+                        collinear.sort(null);
+                        if (origin.compareTo(collinear.get(0)) == 0) {
+                            segments.add(new LineSegment(collinear.get(0), collinear.get(collinear.size() - 1)));
+                        }
+                    }
                 }
+
             }
         }
-        }
 
+        public int numberOfSegments() {return segments.size();}
 
+        public LineSegment[] segments() {return segments.toArray(new LineSegment[0]);}
 
-        public int numberOfSegments() {
-        return segments.size();
     }
-
-    public LineSegment[] segments() {
-        return segments.toArray(new LineSegment[0]);
-    }
-}
